@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+   <style>
+   	body {
+      font-family: Helvetica;
+    }
+    td{
+    	padding: 5px 0;
+    }
+    td{
+    	line-height: 24px;
+    }
+    span{
+    color: #37b;
+      font-size: .85em;
+	  	
+    }
+   </style>
+</head>
+
+	<body>
+	<p>Press the "Enter" key inside the input field || click the button to start search</p>
+	<input type="search" id="myInput" placeholder="Some text..">
+	<button id="myBtn" onclick="search()">Go</button>
+
+	<p id="demo"></p>
+
+	<script>
+		async function getData(filter) {
+		  const url = "https://dummyjson.com/quotes";
+		  try {
+			const response = await fetch(url);
+			if (!response.ok) {
+			  throw new Error(`Response status: ${response.status}`);
+			}
+			const json = await response.json();
+			//console.log(json);
+			const jsonArr = json.quotes;
+			//console.log(arr.length);
+			const filteredArr = jsonArr.filter( (obj) =>  {
+				return obj.quote.toLowerCase().includes(filter);
+			});
+			//console.log(filteredArr);
+			if(filteredArr.length > 0){
+				let text = "<table>";
+				filteredArr.forEach((item) => {
+					//console.log(item.quote  );
+					//console.log(item.author  );
+					text += "<tr><td>" + item.quote + "<br>" + "by: <span>"+item.author+"</span>" +"<hr></td></tr>";
+				});
+				text += "</table>"    
+				document.getElementById("demo").innerHTML = text;
+			}else{
+				document.getElementById("demo").innerHTML = 'No data found.';
+			}
+		  } catch (error) {
+			alert('Something wrong.. Try again..');
+		  }
+		}
+		
+		var input = document.getElementById("myInput");
+		input.addEventListener("keypress", function(event) {
+		  if (event.key === "Enter") {
+			event.preventDefault();
+			search();
+		  }
+		});
+
+		function search(){
+			if(input.value.trim() === ''){
+				alert("Please enter a text");
+				return;
+			}
+			getData(input.value.toLowerCase());
+		}
+
+
+	</script>
+
+	</body>
+</html>
